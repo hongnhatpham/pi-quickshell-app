@@ -62,6 +62,12 @@ Next improvements still needed:
 ## Phase 3 — delegated worker observation
 Goal: make task trees visible and navigable in the app.
 
+Current status:
+- initial implementation landed in `services/DelegationStore.qml`
+- task snapshot/event files are now read into the app
+- the sidebar shows real delegated task rows with status coloring and hierarchy depth
+- the inspector surfaces delegation counts, file paths, and recent events
+
 Deliverables:
 - load and watch task snapshot/event log
 - render delegated tasks in the sidebar
@@ -72,6 +78,11 @@ Deliverables:
 Data sources:
 - `~/.local/state/pi-subagent-orchestrator/tasks.json`
 - `~/.local/state/pi-subagent-orchestrator/events.jsonl`
+
+Next improvements still needed:
+- make task rows selectable and inspectable from the app itself
+- link chat-side events to the matching delegated tasks
+- replace polling with a sharper live update mechanism later if needed
 
 ## Phase 4 — diff visibility
 Goal: make code edits legible without leaving the conversation.

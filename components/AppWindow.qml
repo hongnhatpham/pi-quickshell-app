@@ -7,6 +7,7 @@ Rectangle {
 
     required property var theme
     required property var sessionBridge
+    required property var delegationStore
 
     property bool sidebarCollapsed: false
     property bool inspectorOpen: true
@@ -100,7 +101,7 @@ Rectangle {
                     }
 
                     Text {
-                        text: `pi-quickshell-app · ${root.sessionBridge.statusText} · real chat + live delegation`
+                        text: `pi-quickshell-app · ${root.sessionBridge.statusText} · ${root.delegationStore.statusText}`
                         color: root.theme.foregroundMuted
                         font.family: root.theme.fontFamily
                         font.pixelSize: root.theme.textSizeTiny
@@ -155,6 +156,8 @@ Rectangle {
                 theme: root.theme
                 collapsed: root.sidebarCollapsed
                 diffFocus: root.diffFocus
+                sessionBridge: root.sessionBridge
+                delegationStore: root.delegationStore
             }
 
             Rectangle {
@@ -207,6 +210,7 @@ Rectangle {
                 visible: width > 0
                 theme: root.theme
                 sessionBridge: root.sessionBridge
+                delegationStore: root.delegationStore
             }
         }
     }

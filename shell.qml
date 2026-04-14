@@ -12,6 +12,10 @@ ShellRoot {
         id: sessionBridge
     }
 
+    Services.DelegationStore {
+        id: delegationStore
+    }
+
     FloatingWindow {
         id: window
         visible: true
@@ -25,6 +29,7 @@ ShellRoot {
             anchors.fill: parent
             theme: theme
             sessionBridge: sessionBridge
+            delegationStore: delegationStore
         }
     }
 

@@ -7,6 +7,7 @@ Rectangle {
 
     required property var theme
     required property var sessionBridge
+    required property var delegationStore
 
     function tint(color, alpha) {
         return Qt.rgba(color.r, color.g, color.b, alpha);
@@ -39,10 +40,23 @@ Rectangle {
         {
             title: "Delegation",
             rows: [
-                { key: "snapshot", value: "~/.local/state/pi-subagent-orchestrator/tasks.json" },
-                { key: "events", value: "~/.local/state/pi-subagent-orchestrator/events.jsonl" },
-                { key: "status", value: "observer wiring next" }
+                { key: "status", value: root.delegationStore.statusText },
+                { key: "queued", value: String(root.delegationStore.counts.queued || 0) },
+                { key: "running", value: String(root.delegationStore.counts.running || 0) },
+                { key: "failed", value: String(root.delegationStore.counts.failed || 0) },
+                { key: "snapshot", value: root.delegationStore.snapshotPath },
+                { key: "events", value: root.delegationStore.eventsPath },
+                { key: "updated", value: root.delegationStore.updatedAt || "unknown" }
             ]
+        },
+        {
+            title: "Recent delegation events",
+            rows: root.delegationStore.recentEvents && root.delegationStore.recentEvents.length
+                ? root.delegationStore.recentEvents.map(event => ({
+                    key: (event.kind || "event").replace("task.", ""),
+                    value: event.message || ""
+                }))
+                : [{ key: "events", value: "No recent delegation events" }]
         }
     ]
 
@@ -74,8 +88,8 @@ Rectangle {
                 Item { Layout.fillWidth: true }
 
                 Text {
-                    text: "live runtime surface"
-                    color: root.theme.foregroundMuted
+                    text: root.delegationStore.statusText
+                    color: root.delegationStore.activeCount > 0 ? root.theme.oliveBright : root.theme.foregroundMuted
                     font.family: root.theme.fontFamily
                     font.pixelSize: root.theme.textSizeTiny
                 }

@@ -8,9 +8,25 @@ Rectangle {
     required property var theme
     required property bool collapsed
     required property bool diffFocus
+    required property var sessionBridge
+    required property var delegationStore
 
     function tint(color, alpha) {
         return Qt.rgba(color.r, color.g, color.b, alpha);
+    }
+
+    function taskTone(status) {
+        if (status === "running")
+            return root.theme.oliveBright;
+        if (status === "done")
+            return root.theme.indigoBright;
+        if (status === "queued")
+            return root.theme.amberBright;
+        if (status === "failed")
+            return root.theme.terracottaBright;
+        if (status === "cancelled")
+            return root.theme.plumBright;
+        return root.theme.accentBright;
     }
 
     color: root.theme.backgroundRaised
@@ -19,21 +35,30 @@ Rectangle {
     border.color: root.tint(root.theme.outline, 0.72)
 
     readonly property var threadRows: [
-        { title: "Main thread", meta: "current workspace", active: true },
-        { title: "Design shell scaffold", meta: "next build step", active: false },
-        { title: "Delegation runtime notes", meta: "reference", active: false }
+        {
+            title: "Main thread",
+            meta: root.sessionBridge.statusText,
+            active: true
+        },
+        {
+            title: root.sessionBridge.lastPrompt && root.sessionBridge.lastPrompt.length
+                ? root.sessionBridge.lastPrompt.slice(0, 52)
+                : "No prompt yet",
+            meta: root.sessionBridge.lastPrompt && root.sessionBridge.lastPrompt.length
+                ? "latest prompt"
+                : "send a prompt to start",
+            active: false
+        }
     ]
 
-    readonly property var taskRows: [
-        { title: "Main chat thread", depth: 0, status: "live" },
-        { title: "Research QuickShell patterns", depth: 1, status: "running" },
-        { title: "Inspect theme inheritance", depth: 1, status: "done" },
-        { title: "Review diff behavior", depth: 1, status: "queued" }
-    ]
+    readonly property var taskRows: root.delegationStore.taskRows && root.delegationStore.taskRows.length
+        ? root.delegationStore.taskRows
+        : [{ title: "No delegated tasks yet", depth: 0, status: "idle", meta: root.delegationStore.statusText }]
 
     readonly property var runtimeRows: [
         { key: "cwd", value: "pi-quickshell-app" },
-        { key: "extensions", value: "persona · delegation" },
+        { key: "session", value: root.sessionBridge.completedTurns > 0 ? `${root.sessionBridge.completedTurns} turns` : root.sessionBridge.statusText },
+        { key: "delegation", value: root.delegationStore.statusText },
         { key: "diff", value: root.diffFocus ? "inline + focused" : "inline only" }
     ]
 
@@ -44,7 +69,7 @@ Rectangle {
 
         Rectangle {
             Layout.fillWidth: true
-            implicitHeight: root.collapsed ? 42 : 56
+            implicitHeight: root.collapsed ? 42 : 64
             radius: root.theme.radius
             color: root.theme.backgroundOverlay
             border.width: 1
@@ -72,13 +97,20 @@ Rectangle {
                     font.pixelSize: root.theme.textSize
                     font.weight: Font.DemiBold
                 }
+
+                Text {
+                    text: `${root.delegationStore.activeCount} active · ${root.delegationStore.counts.failed || 0} failed`
+                    color: root.delegationStore.activeCount > 0 ? root.theme.oliveBright : root.theme.foregroundMuted
+                    font.family: root.theme.fontFamily
+                    font.pixelSize: root.theme.textSizeTiny
+                }
             }
 
             Text {
                 anchors.centerIn: parent
                 visible: root.collapsed
-                text: "A3"
-                color: root.theme.cream
+                text: root.delegationStore.activeCount > 0 ? `${root.delegationStore.activeCount}` : "A3"
+                color: root.delegationStore.activeCount > 0 ? root.theme.oliveBright : root.theme.cream
                 font.family: root.theme.fontFamily
                 font.pixelSize: root.theme.textSize
                 font.weight: Font.DemiBold
@@ -144,13 +176,7 @@ Rectangle {
                                     anchors.top: parent.top
                                     anchors.bottom: parent.bottom
                                     anchors.margins: 8
-                                    color: modelData.status === "running"
-                                        ? root.theme.oliveBright
-                                        : (modelData.status === "done"
-                                            ? root.theme.indigoBright
-                                            : (modelData.status === "queued"
-                                                ? root.theme.amberBright
-                                                : root.theme.accentBright))
+                                    color: root.taskTone(modelData.status)
                                 }
 
                                 Item {
@@ -166,7 +192,7 @@ Rectangle {
                                             : (sectionKind === "tasks"
                                                 ? ((modelData.depth || 0) > 0 ? "└" : "↺")
                                                 : "⋯")
-                                        color: root.theme.foregroundSoft
+                                        color: sectionKind === "tasks" ? root.taskTone(modelData.status) : root.theme.foregroundSoft
                                         font.family: root.theme.fontFamily
                                         font.pixelSize: root.theme.textSize
                                     }
@@ -184,16 +210,22 @@ Rectangle {
                                             font.family: root.theme.fontFamily
                                             font.pixelSize: root.theme.textSize
                                             font.weight: (sectionKind === "threads" && modelData.active) ? Font.DemiBold : Font.Normal
+                                            elide: Text.ElideRight
+                                            width: parent.width
                                         }
 
                                         Text {
-                                            visible: sectionKind !== "tasks"
+                                            visible: sectionKind !== "tasks" || !!(modelData.meta && modelData.meta.length)
                                             text: sectionKind === "runtime"
                                                 ? (modelData.value || "")
                                                 : (modelData.meta || "")
-                                            color: root.theme.foregroundMuted
+                                            color: sectionKind === "tasks" && modelData.status === "failed"
+                                                ? root.theme.terracottaBright
+                                                : root.theme.foregroundMuted
                                             font.family: root.theme.fontFamily
                                             font.pixelSize: root.theme.textSizeTiny
+                                            elide: Text.ElideRight
+                                            width: parent.width
                                         }
                                     }
                                 }

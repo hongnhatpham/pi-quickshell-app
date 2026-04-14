@@ -120,8 +120,12 @@ This repository now contains:
   - prompts are sent through the actual `pi` CLI
   - output is streamed from `--mode json`
   - a dedicated session file is used so consecutive prompts continue the same conversation within the app runtime
+- an initial live delegation observer in `services/DelegationStore.qml`
+  - reads the orchestrator snapshot/event store
+  - surfaces real task rows in the left sidebar
+  - surfaces delegation counts and recent events in the inspector
 
 What is still missing:
-- delegated task store observation in the sidebar
 - real extension/settings ingestion instead of placeholder rows
 - smarter diff extraction from actual tool activity
+- tighter linking between chat events and delegated task references
