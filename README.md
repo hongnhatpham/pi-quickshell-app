@@ -96,6 +96,7 @@ pi-quickshell-app/
   shell.qml
   Theme.qml
   components/
+  services/
   docs/
     product-spec.md
     architecture.md
@@ -109,11 +110,18 @@ This repository now contains:
 - the initial product, architecture, and implementation documentation
 - project design context in `.impeccable.md`
 - a first standalone QuickShell app shell scaffold using `ShellRoot` + `FloatingWindow`
-- a themed placeholder UI for:
+- a themed UI for:
   - left collapsible sidebar
   - conversation-first center pane
   - inline diff preview
   - toggleable runtime/settings inspector
   - bottom composer
+- an initial real Pi session bridge in `services/SessionBridge.qml`
+  - prompts are sent through the actual `pi` CLI
+  - output is streamed from `--mode json`
+  - a dedicated session file is used so consecutive prompts continue the same conversation within the app runtime
 
-The scaffold is intentionally static for now. Real Pi session streaming, delegation store observation, and settings/runtime wiring come next.
+What is still missing:
+- delegated task store observation in the sidebar
+- real extension/settings ingestion instead of placeholder rows
+- smarter diff extraction from actual tool activity

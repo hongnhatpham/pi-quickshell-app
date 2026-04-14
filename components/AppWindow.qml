@@ -6,6 +6,7 @@ Rectangle {
     id: root
 
     required property var theme
+    required property var sessionBridge
 
     property bool sidebarCollapsed: false
     property bool inspectorOpen: true
@@ -99,7 +100,7 @@ Rectangle {
                     }
 
                     Text {
-                        text: "pi-quickshell-app · personal workspace · real chat + live delegation"
+                        text: `pi-quickshell-app · ${root.sessionBridge.statusText} · real chat + live delegation`
                         color: root.theme.foregroundMuted
                         font.family: root.theme.fontFamily
                         font.pixelSize: root.theme.textSizeTiny
@@ -197,6 +198,7 @@ Rectangle {
                 Layout.fillHeight: true
                 theme: root.theme
                 diffFocus: root.diffFocus
+                sessionBridge: root.sessionBridge
             }
 
             InspectorDrawer {
@@ -204,6 +206,7 @@ Rectangle {
                 Layout.fillHeight: true
                 visible: width > 0
                 theme: root.theme
+                sessionBridge: root.sessionBridge
             }
         }
     }

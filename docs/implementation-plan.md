@@ -41,6 +41,12 @@ Do not drift away from the current desktop family.
 ## Phase 2 — real Pi chat session integration
 Goal: make the app actually useful as a conversation surface.
 
+Current status:
+- initial implementation landed in `services/SessionBridge.qml`
+- the app now sends real prompts through `pi --mode json -p`
+- output is streamed line-by-line into the main chat timeline
+- consecutive prompts reuse a dedicated session file so the app has real conversational continuity across turns within the running app flow
+
 Deliverables:
 - launch Pi chat from inside the app
 - stream structured output into the main chat timeline
@@ -48,9 +54,10 @@ Deliverables:
 - support ongoing response updates
 - basic session controls
 
-Needs investigation:
-- best process model for driving Pi from a QuickShell app
-- whether a helper bridge is needed to normalize JSON event streams for QML
+Next improvements still needed:
+- load prior session history into the UI on startup instead of starting visually empty
+- expose model/session selection controls
+- decide whether a helper bridge is needed later for richer session control beyond the current per-turn process model
 
 ## Phase 3 — delegated worker observation
 Goal: make task trees visible and navigable in the app.

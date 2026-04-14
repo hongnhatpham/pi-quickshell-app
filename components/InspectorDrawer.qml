@@ -6,6 +6,7 @@ Rectangle {
     id: root
 
     required property var theme
+    required property var sessionBridge
 
     function tint(color, alpha) {
         return Qt.rgba(color.r, color.g, color.b, alpha);
@@ -28,9 +29,11 @@ Rectangle {
         {
             title: "Runtime",
             rows: [
-                { key: "cwd", value: "/mnt/storage/01 Projects/pi-quickshell-app" },
+                { key: "cwd", value: root.sessionBridge.projectPath },
                 { key: "theme", value: "niri/alacritty inherited" },
-                { key: "window", value: "FloatingWindow" }
+                { key: "window", value: "FloatingWindow" },
+                { key: "session", value: root.sessionBridge.sessionFile },
+                { key: "status", value: root.sessionBridge.statusText }
             ]
         },
         {
