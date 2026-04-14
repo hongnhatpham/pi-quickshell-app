@@ -18,7 +18,22 @@ Deliverables:
 - app frame, header, sidebar, main pane, composer, inspector shell
 - theme tokens imported from existing QuickShell/Alacritty values
 - spacing, typography, surface, and focus rules
-- resize/collapse behavior for sidebar and inspector
+- resize/collapse behavior for the sidebar
+- toggleable inspector drawer
+
+Implementation decision:
+- use `ShellRoot` + `FloatingWindow` for the standalone app shell
+- do not build the app on top of `PanelWindow` panel logic
+
+Current scaffold status:
+- `shell.qml`
+- `Theme.qml`
+- `components/AppWindow.qml`
+- `components/Sidebar.qml`
+- `components/ChatPane.qml`
+- `components/DiffPreview.qml`
+- `components/InspectorDrawer.qml`
+- `components/Composer.qml`
 
 Key constraint:
 Do not drift away from the current desktop family.
@@ -98,6 +113,8 @@ Deliverables:
 - optional unread/activity marker
 
 ## Working UI plan
+
+The current scaffold already reflects this plan in static form. Next work should wire the placeholder surfaces to real data rather than redesigning the layout from scratch.
 
 ## Sidebar
 Sections:

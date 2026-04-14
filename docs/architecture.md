@@ -91,6 +91,15 @@ Useful details to surface:
 ## App window
 A standalone, launchable QuickShell window.
 
+Chosen base primitive:
+- `ShellRoot`
+- `FloatingWindow`
+
+Why:
+- this is a persistent desktop workbench, not a layer-shell panel
+- `PanelWindow` remains appropriate for bars/overlays, but not for the main app window
+- local evidence already exists in `~/projects/niri-quickshell-bar/lockscreen/test.qml`
+
 Primary composition:
 - left collapsible sidebar
 - central chat/diff workspace
@@ -120,10 +129,11 @@ This should feel like one thread, not a pile of disconnected panes.
 ## Settings model
 Settings should be visible without feeling like a separate app.
 
-Possible pattern:
+Chosen first pattern:
 - right-side inspector drawer
 - toggleable from the header
-- remembers width/open state
+- fixed width in the first scaffold
+- later can remember width/open state
 
 ## Data flow sketch
 

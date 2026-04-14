@@ -93,14 +93,27 @@ pi-quickshell-app/
   README.md
   .impeccable.md
   .gitignore
+  shell.qml
+  Theme.qml
+  components/
   docs/
     product-spec.md
     architecture.md
     implementation-plan.md
+    layout-synthesis.md
 ```
-
-Implementation code will be added after the product/architecture plan is locked.
 
 ## Current status
 
-This repository currently contains the initial product, architecture, and implementation documentation plus project design context.
+This repository now contains:
+- the initial product, architecture, and implementation documentation
+- project design context in `.impeccable.md`
+- a first standalone QuickShell app shell scaffold using `ShellRoot` + `FloatingWindow`
+- a themed placeholder UI for:
+  - left collapsible sidebar
+  - conversation-first center pane
+  - inline diff preview
+  - toggleable runtime/settings inspector
+  - bottom composer
+
+The scaffold is intentionally static for now. Real Pi session streaming, delegation store observation, and settings/runtime wiring come next.
